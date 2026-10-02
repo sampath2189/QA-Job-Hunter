@@ -252,13 +252,13 @@ Matched Job -> Open Employer Application -> Pre-fill Known Information -> Candid
 
 The system should not blindly submit applications without human review.
 
-## Interview Explanation
+## Technical Overview
 
-### One-line explanation
+### Project Overview
 
 I built an AI-powered QA job discovery system that scans employer career sites, identifies relevant QA opportunities, matches them against a configurable candidate profile, removes irrelevant roles, prevents duplicate alerts, and sends notifications for new matches.
 
-### Technical explanation
+### Technical Architecture
 
 The system is built using Node.js, JavaScript and Playwright. I created separate scanners for different career platforms because employers use different systems such as Workday, Eightfold and custom career portals. The scanners normalize the results into a common job structure, which is then passed to a matching engine. The matcher considers role, location, experience and technology keywords and also filters out irrelevant hardware and manufacturing QA positions. Matching jobs are stored locally and the alert manager prevents duplicate notifications before sending new matches through Gmail.
 
@@ -270,7 +270,7 @@ Playwright is used where browser interaction is required for dynamic career site
 
 Different companies use different career platforms and APIs. A platform-specific scanner allows the system to handle each source reliably while producing the same normalized job format for the matching layer.
 
-### How do you prevent duplicate alerts?
+### Duplicate Alert Prevention
 
 Each job is stored using identifying information such as company, job ID and URL. Before sending an alert, the system checks the local job store. Previously alerted jobs are skipped, while previously saved but unconfirmed alerts can be retried.
 
@@ -306,6 +306,8 @@ Next development stage:
 This project is intended as a personal automation and portfolio/interview project.
 
 Career-site content remains the property of the respective employers.
+
+
 
 
 
