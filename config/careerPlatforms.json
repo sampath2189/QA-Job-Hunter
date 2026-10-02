@@ -1,0 +1,58 @@
+{
+  "companies": {
+    "Apple": {
+      "platform": "custom",
+      "scanner": "appleScanner"
+    },
+
+    "Amazon": {
+      "platform": "custom",
+      "scanner": "amazonPipelineScanner"
+    },
+
+    "Adobe": {
+      "platform": "workday",
+      "scanner": "workdayScanner",
+      "url": "https://adobe.wd5.myworkdayjobs.com/en-US/external_experienced"
+    },
+
+    "BrowserStack": {
+      "platform": "workday",
+      "scanner": "workdayScanner",
+      "url": "https://browserstack.wd3.myworkdayjobs.com/en-US/External"
+    },
+
+    "BMC Software": {
+  "platform": "custom",
+  "scanner": "bmcScanner",
+  "url": "https://jobs.bmc.com/Careers/SearchJobs/?listFilterMode=1&1274=9406&1274_format=1347&intcmp=JobsByCountry"
+},
+	"Zeta": {
+  "platform": "lever",
+  "scanner": "leverScanner",
+  "url": "https://jobs.lever.co/zeta"
+},
+
+    "Motorola Solutions": {
+      "platform": "workday",
+      "scanner": "workdayScanner",
+      "url": "https://motorolasolutions.wd5.myworkdayjobs.com/en-US/Careers"
+    },
+
+    "NVIDIA": {
+      "platform": "workday",
+      "scanner": "workdayScanner",
+      "url": "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite"
+    },
+	
+	"Qualcomm": {
+  "platform": "eightfold",
+  "scanner": "eightfoldScanner",
+  "url": "https://careers.qualcomm.com/careers",
+  "searchUrl": "https://careers.qualcomm.com/api/pcsx/search",
+  "detailUrl": "https://careers.qualcomm.com/api/pcsx/position_details",
+  "domain": "qualcomm.com",
+  "baseUrl": "https://careers.qualcomm.com"
+	}
+  }
+}

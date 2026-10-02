@@ -1,0 +1,96 @@
+{
+  "candidate": {
+    "total_qa_experience_years": 5.75,
+    "manual_testing_experience": "5+ years",
+    "automation_testing_experience_years": 1,
+    "playwright_experience_years": 1,
+    "notice_period": "Immediate"
+  },
+
+  "job_search": {
+    "minimum_total_experience_years": 1,
+
+    "locations": [
+    "Hyderabad",
+    "Bangalore",
+    "Bengaluru",
+    "India",
+    "Remote"
+	],
+
+    "employment_types": [
+      "Full-time",
+      "Contract"
+    ],
+
+    "work_modes": [
+      "Office",
+      "Hybrid",
+      "Remote"
+    ]
+  },
+
+  "target_roles": [
+    "QA Tester",
+    "QA Engineer",
+    "Test Engineer",
+    "Manual Tester",
+    "QA Automation Engineer",
+    "Automation Tester",
+    "Automation Tester Playwright",
+    "Senior QA Engineer",
+    "Quality Engineer",
+    "Senior QA Tester",
+    "Software Quality Test Engineer",
+    "Software Tester",
+    "Quality Assurance Engineer",
+    "QA Analyst",
+    "QA Engineer Manual Automation",
+    "Quality Assurance",
+    "Software Development Engineer in Test",
+    "SDET"
+  ],
+
+  "preferred_technologies": [
+    "Playwright",
+    "JavaScript",
+    "TypeScript",
+    "API Testing",
+    "Manual Testing",
+    "Web Testing",
+    "Game Testing",
+    "Automation Testing",
+    "Functional Testing",
+    "Regression Testing",
+    "Integration Testing",
+    "UI Testing",
+    "STLC",
+    "L10n",
+    "i18n",
+    "Cross-platform Testing"
+  ],
+
+  "additional_technologies": [
+    "Selenium",
+    "Cypress",
+    "Postman",
+    "REST API",
+    "REST Assured",
+    "JIRA",
+    "Git",
+    "GitHub",
+    "CI/CD",
+    "Agile",
+    "SQL",
+    "Test Automation"
+  ],
+
+  "matching_rules": {
+    "automation_experience_is_separate_from_total_qa": true,
+    "do_not_reject_for_low_automation_experience": true,
+    "allow_stretch_matches": true,
+    "alert_for_strong_matches": true,
+    "alert_for_review_matches": true,
+    "ignore_low_matches": true
+  }
+}

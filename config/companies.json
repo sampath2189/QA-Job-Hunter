@@ -1,0 +1,437 @@
+[
+  {
+    "name": "Adobe",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Amazon",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Apple",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Arcesium",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "ADP",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "BMC Software",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Broadridge",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "BrowserStack",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Cisco",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Commvault",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Cigniti",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Datadog",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Darwinbox",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "D.E. Shaw",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Deliveroo",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Electronic Arts",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "EPAM",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Everbridge",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "FactSet",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Freshworks",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "F5",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Google",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "GlobalLogic",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Guidewire",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "HighRadius",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Hewlett Packard Enterprise",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Hitachi Vantara",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Honeywell",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Infor",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Indeed",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Informatica",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "InterSystems",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "JPMorgan Chase",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Jio Platforms",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Juniper Networks",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Temenos",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Kyndryl",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "KnowBe4",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "LinkedIn",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Lowe's",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "LogicMonitor",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Microsoft",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Meta",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Micron Technology",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Motorola Solutions",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "NVIDIA",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Nutanix",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "NCR Voyix",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Nokia",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Oracle",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "OpenText",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Optum",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "o9 Solutions",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "PayPal",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Pegasystems",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Progress Software",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Pure Storage",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Qualcomm",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Qlik",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Rubrik",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Rocket Software",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Red Hat",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Salesforce",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "ServiceNow",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "SAP",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Synopsys",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Splunk",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Tech Mahindra",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Thomson Reuters",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Thoughtworks",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Teradata",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Uber",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "UnitedHealth Group",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Uptycs",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Veeam",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Vistex",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Broadcom",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Walmart Global Tech",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Workday",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Western Digital",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "AMD",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Xiaomi",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "YASH Technologies",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Yellow.ai",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Zeta",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Zenoti",
+    "priority": "high",
+    "enabled": true
+  },
+  {
+    "name": "Zscaler",
+    "priority": "high",
+    "enabled": true
+  }
+]
