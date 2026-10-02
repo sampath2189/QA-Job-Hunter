@@ -82,16 +82,21 @@ function saveJob(job) {
             storedJob.jobKey === jobKey
     );
 
-    const record = {
-        ...job,
-        jobKey,
-        firstSeenAt:
-            existingIndex >= 0
-                ? jobs[existingIndex].firstSeenAt
-                : new Date().toISOString(),
-        lastSeenAt:
-            new Date().toISOString()
-    };
+    const existingJob =
+    existingIndex >= 0
+        ? jobs[existingIndex]
+        : null;
+
+const record = {
+    ...existingJob,
+    ...job,
+    jobKey,
+    firstSeenAt:
+        existingJob?.firstSeenAt ||
+        new Date().toISOString(),
+    lastSeenAt:
+        new Date().toISOString()
+};
 
     if (existingIndex >= 0) {
         jobs[existingIndex] = record;
