@@ -1,8 +1,15 @@
 const {
     getJob,
+    getJobKey,
     saveJob,
     markJobAlerted
 } = require("../database/jobStore");
+
+const {
+    findSheetJob,
+    upsertSheetJob,
+    markSheetJobAlerted
+} = require("../database/googleSheetStore");
 
 const {
     sendJobAlert
@@ -12,7 +19,7 @@ async function processMatchedJobWithAlert(
     job,
     alertSender = sendJobAlert
 ) {
-    const result = processMatchedJob(job);
+    const result = await processMatchedJob(job);
 
     if (
         result.action !== "NEW_MATCH" &&
@@ -25,7 +32,10 @@ async function processMatchedJobWithAlert(
         await alertSender(result.job);
 
         const alertedJob =
-            markJobAlerted(result.job);
+            await markSheetJobAlerted(result.job);
+
+        // Keep the local database updated as well.
+        markJobAlerted(result.job);
 
         return {
             action: "ALERT_SENT",
@@ -49,8 +59,9 @@ async function processMatchedJobWithAlert(
     }
 }
 
-function processMatchedJob(job) {
+async function processMatchedJob(job) {
     const match = job.match;
+    const jobKey = job.jobKey || getJobKey(job);
 
     // Ignore jobs that the matcher rejected.
     if (!match || match.status === "IGNORE") {
@@ -63,36 +74,72 @@ function processMatchedJob(job) {
         };
     }
 
-    // Check whether this exact requisition
-    // has already been reported successfully.
-    const existingJob = getJob(job);
+    /*
+     * Google Sheets is now the persistent history source.
+     *
+     * This allows duplicate-alert prevention to survive
+     * GitHub Actions runner restarts.
+     */
+    const sheetJob =
+    await findSheetJob(jobKey);
 
-    if (existingJob && existingJob.alertedAt) {
+    if (sheetJob && sheetJob.alertedAt) {
         return {
             action: "ALREADY_REPORTED",
-            job: existingJob,
+            job: sheetJob,
             reason:
                 "This job requisition has already been reported successfully."
         };
     }
 
-    if (existingJob && !existingJob.alertedAt) {
+    if (sheetJob && !sheetJob.alertedAt) {
+        const updatedJob = {
+            ...sheetJob,
+            ...job,
+            match: {
+                ...sheetJob.match,
+                ...job.match
+            },
+            firstSeenAt:
+                sheetJob.firstSeenAt ||
+                job.firstSeenAt ||
+                new Date().toISOString(),
+            lastSeenAt:
+                new Date().toISOString(),
+            alertedAt:
+                sheetJob.alertedAt || ""
+        };
+
+        await upsertSheetJob(updatedJob);
+
         return {
             action: "RETRY_ALERT",
-            job: existingJob,
+            job: updatedJob,
             reason:
                 "This job was previously saved, but its email alert was not confirmed."
         };
     }
 
-    // Store the new matching job first.
-    const savedJob = saveJob(job);
+    const newJob = {
+        ...job,
+	jobKey,
+        firstSeenAt:
+            job.firstSeenAt ||
+            new Date().toISOString(),
+        lastSeenAt:
+            new Date().toISOString()
+    };
+
+    await upsertSheetJob(newJob);
+
+    // Keep the local database updated as a local backup.
+    const savedJob = saveJob(newJob);
 
     return {
         action: "NEW_MATCH",
         job: savedJob,
         reason:
-            "New matching job found and saved."
+            "New matching job found and saved to persistent history."
     };
 }
 
