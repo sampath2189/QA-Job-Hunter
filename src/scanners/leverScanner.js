@@ -72,6 +72,7 @@ function isPotentialQATitle(title) {
     );
 }
 
+
 async function getLeverJobDetails(page, jobUrl) {
     await page.goto(jobUrl, {
         waitUntil: "domcontentloaded",
@@ -84,21 +85,41 @@ async function getLeverJobDetails(page, jobUrl) {
         await page.locator("body").innerText()
     );
 
-    const title = normalize(
-        await page.locator("h1").first().innerText().catch(() => "")
-    );
+    // Prefer the actual job title, not the entire page heading.
+    const titleSelectors = [
+        '[data-qa="posting-name"]',
+        ".posting-headline h2",
+        "h1"
+    ];
 
+    let title = "";
+
+    for (const selector of titleSelectors) {
+        const locator = page.locator(selector).first();
+
+        if (await locator.count()) {
+            const value = normalize(
+                await locator.innerText().catch(() => "")
+            );
+
+            if (value) {
+                title = value;
+                break;
+            }
+        }
+    }
+
+    // Prefer the specific location category.
     let location = "";
 
     const locationSelectors = [
         ".posting-categories .location",
-        ".location",
-        "[class*='location']"
+        ".posting-headline .location",
+        ".location"
     ];
 
     for (const selector of locationSelectors) {
-        const locator =
-            page.locator(selector).first();
+        const locator = page.locator(selector).first();
 
         if (await locator.count()) {
             const value = normalize(
@@ -115,15 +136,14 @@ async function getLeverJobDetails(page, jobUrl) {
     return {
         title,
         location,
-        experienceYears:
-            extractExperience(bodyText),
-        automationRequired:
-            detectAutomation(bodyText),
+        experienceYears: extractExperience(bodyText),
+        automationRequired: detectAutomation(bodyText),
         description: bodyText,
         fullText: bodyText,
         url: jobUrl
     };
 }
+
 
 async function scanLeverJobs(config) {
     const browser = await chromium.launch({
@@ -150,16 +170,17 @@ async function scanLeverJobs(config) {
 
         await page.waitForTimeout(2500);
 
-        const jobLinks =
-            await page.locator(
-                "a[href*='jobs.lever.co/']"
-            ).evaluateAll((links) => {
-                return links.map((link) => ({
-                    title:
-                        (link.innerText || "").trim(),
+    const jobLinks = await page
+        .locator("a.posting-title")
+        .evaluateAll((links) => {
+            return links.map((link) => ({
+                title:
+                    link.querySelector('[data-qa="posting-name"]')
+                        ?.innerText?.trim() || "",
                     url: link.href
                 }));
             });
+
 
         const uniqueLinks = new Map();
 
