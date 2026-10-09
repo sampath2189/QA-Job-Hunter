@@ -237,7 +237,7 @@ async function main() {
 
     assert.equal(
         sheetsFailureResult.markingResults[0].action,
-        "MARKING_FAILED"
+        "SHEET_MARKING_FAILED"
     );
 
     console.log(
