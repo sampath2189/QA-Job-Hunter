@@ -238,6 +238,13 @@ function calculateMatch(job) {
                 )
         );
 
+    const excludedTitle =
+        (keywords.exclude_title_keywords || []).some(
+            (keyword) =>
+                title.includes(normalize(keyword))
+        );
+
+
 
     // ----------------------------------------
     // LOCATION MATCH
@@ -263,6 +270,16 @@ function calculateMatch(job) {
     // ----------------------------------------
     // BASIC FILTERS
     // ----------------------------------------
+
+
+
+    if (excludedTitle) {
+        return {
+            status: "IGNORE",
+            score: 0,
+            reason: "Job title matches a configured excluded title keyword."
+        };
+    }
 
     if (!roleMatch) {
         return {
@@ -296,30 +313,52 @@ function calculateMatch(job) {
     // EXPERIENCE
     // ----------------------------------------
 
+
+
     const experienceCompatible =
         requiredExperience === null ||
         requiredExperience === undefined ||
         requiredExperience <= totalExperience;
 
-    if (!experienceCompatible) {
+    const allowStretchMatches =
+        profile.matching_rules?.allow_stretch_matches === true;
+
+    const stretchExperienceCompatible =
+        allowStretchMatches &&
+        requiredExperience !== null &&
+        requiredExperience !== undefined &&
+        requiredExperience > totalExperience &&
+        requiredExperience <= totalExperience + 1;
+
+    if (!experienceCompatible && !stretchExperienceCompatible) {
         return {
             status: "IGNORE",
             score: 0,
-            reason:
-                `Required experience (${requiredExperience} years) exceeds candidate total QA experience (${totalExperience} years).`
+            reason: allowStretchMatches
+                ? `Required experience (${requiredExperience} years) exceeds the supported range (up to ${totalExperience + 1} years).`
+                : `Required experience (${requiredExperience} years) exceeds candidate total QA experience (${totalExperience} years).`
         };
     }
+
+
 
 
     // ----------------------------------------
     // BASE SCORE
     // ----------------------------------------
 
+
     let score = 0;
 
     score += 25; // Role
     score += 20; // Location
-    score += 20; // Experience
+
+    if (experienceCompatible) {
+        score += 20; // Experience
+    } else if (stretchExperienceCompatible) {
+        score += 10; // Stretch experience
+    }
+
 
 
     // ----------------------------------------
@@ -467,26 +506,22 @@ function calculateMatch(job) {
     // STATUS
     // ----------------------------------------
 
-    let status = "IGNORE";
 
+    let status = "IGNORE";
 
     if (
         experienceCompatible &&
         preferredTechnologyScore >= 15
     ) {
-
-        status =
-            "STRONG_MATCH";
-
+        status = "STRONG_MATCH";
     }
     else if (
-        experienceCompatible &&
-        score >= 50
+        score >= 50 &&
+        (experienceCompatible || stretchExperienceCompatible)
     ) {
-
-        status =
-            "REVIEW_MATCH";
+        status = "REVIEW_MATCH";
     }
+
 
 
     return {

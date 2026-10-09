@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
 "scripts": {
-  "test": "node tests/digest-test.js && node tests/alert-retry-test.js"
+  "test": "node tests/job-matcher-test.js && node tests/digest-test.js && node tests/alert-retry-test.js"
 },
 
   "keywords": [],
