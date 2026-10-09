@@ -200,27 +200,35 @@ async function main() {
 
 
 	// ========================================
-// QUALCOMM
-// ========================================
 
-console.log("\n========================================");
-console.log("Scanning Qualcomm");
-console.log("========================================");
+    // ========================================
+    // QUALCOMM
+    // ========================================
 
-const qualcommJobs =
-    await scanEightfoldJobs({
-        company: "Qualcomm",
-        platform: "eightfold",
-        url: "https://careers.qualcomm.com/careers",
-        domain: "qualcomm.com",
-        baseUrl: "https://careers.qualcomm.com",
-        searchUrl: "https://careers.qualcomm.com/api/pcsx/search",
-        detailUrl: "https://careers.qualcomm.com/api/pcsx/position_details"
-    });
+    console.log("\n========================================");
+    console.log("Scanning Qualcomm");
+    console.log("========================================");
 
-console.log(
-    `Qualcomm jobs returned: ${qualcommJobs.length}`
-);
+    let qualcommJobs = [];
+
+    try {
+        qualcommJobs = await scanEightfoldJobs({
+            company: "Qualcomm",
+            platform: "eightfold",
+            url: "https://careers.qualcomm.com/careers",
+            domain: "qualcomm.com",
+            baseUrl: "https://careers.qualcomm.com",
+            searchUrl: "https://careers.qualcomm.com/api/pcsx/search",
+            detailUrl: "https://careers.qualcomm.com/api/pcsx/position_details"
+        });
+
+        console.log(`Qualcomm jobs returned: ${qualcommJobs.length}`);
+    } catch (error) {
+        console.error(
+            `Qualcomm scanner failed; continuing with other companies. ${error.message}`
+        );
+    }
+
 
 
     // ========================================
