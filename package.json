@@ -2,9 +2,10 @@
   "name": "qa-job-hunter",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+"scripts": {
+  "test": "node tests/digest-test.js && node tests/alert-retry-test.js"
+},
+
   "keywords": [],
   "author": "",
   "license": "ISC",

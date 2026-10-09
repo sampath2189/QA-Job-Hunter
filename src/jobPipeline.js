@@ -8,7 +8,8 @@ const { scanBmcJobs } = require("./scanners/bmcScanner");
 const { scanEightfoldJobs } = require("./scanners/eightfoldScanner");
 
 const { matchJob } = require("./matching/jobMatcher");
-const { processMatchedJobs } = require("./notifications/alertManager");
+const { processMatchedJobsAsDigest } =
+    require("./notifications/alertManager");
 
 
 // ========================================
@@ -466,9 +467,15 @@ console.log(
     console.log("========================================");
 
 
-    await processMatchedJobs(
+    const alertSummary =
+    await processMatchedJobsAsDigest(
         jobsToDisplay
     );
+
+console.log("Digest processing result:");
+console.log(
+    JSON.stringify(alertSummary, null, 2)
+);
 
 
     // ========================================

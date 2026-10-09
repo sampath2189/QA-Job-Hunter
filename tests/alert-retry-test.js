@@ -1,176 +1,229 @@
-require("dotenv").config();
 
-const {
-    processMatchedJobWithAlert
-} = require("../src/notifications/alertManager");
+const assert = require("node:assert/strict");
 
-const {
-    loadJobs,
-    saveJobs,
-    getJob
-} = require("../src/database/jobStore");
-
-const TEST_ROLE_NUMBER = "TEST-RETRY-002";
+const sheetJobs = new Map();
+const localJobs = new Map();
+let senderCalls = 0;
 
 const testJob = {
     company: "QA Job Hunter Retry Test",
     title: "Test QA Engineer - Retry Scenario",
     url: "https://example.com/qa-retry-test",
-    locations: [
-        "Hyderabad, Telangana, India"
-    ],
-    roleNumber: TEST_ROLE_NUMBER,
-    postedDate: "Sep 28, 2026",
-    minimumExperience: "3+ years",
-    automationExperience: "1+ years",
-    technologies: [
-        "Playwright",
-        "JavaScript",
-        "API Testing"
-    ],
+    roleNumber: "TEST-RETRY-002",
+    locations: ["Hyderabad, Telangana, India"],
+    technologies: ["Playwright", "JavaScript", "API Testing"],
     match: {
         status: "STRONG_MATCH",
         score: 95,
-        reasons: [
-            "Controlled retry test"
-        ]
+        reasons: ["Controlled retry test"]
     }
 };
 
+const sheetModulePath = require.resolve(
+    "../src/database/googleSheetStore"
+);
+
+const localModulePath = require.resolve(
+    "../src/database/jobStore"
+);
+
+const notifierModulePath = require.resolve(
+    "../src/notifications/gmailNotifier"
+);
+
+require.cache[sheetModulePath] = {
+    id: sheetModulePath,
+    filename: sheetModulePath,
+    loaded: true,
+    exports: {
+        findSheetJob: async key => sheetJobs.get(key) || null,
+
+        upsertSheetJob: async job => {
+            const previous = sheetJobs.get(job.jobKey);
+
+            const updated = {
+                ...previous,
+                ...job,
+                alertedAt: previous?.alertedAt || job.alertedAt || ""
+            };
+
+            sheetJobs.set(job.jobKey, updated);
+
+            return {
+                action: previous ? "UPDATED" : "INSERTED",
+                job: updated
+            };
+        },
+
+        markSheetJobAlerted: async job => {
+            const existing = sheetJobs.get(job.jobKey);
+
+            if (!existing) {
+                return null;
+            }
+
+            const updated = {
+                ...existing,
+                alertedAt: new Date().toISOString()
+            };
+
+            sheetJobs.set(job.jobKey, updated);
+
+            return updated;
+        }
+    }
+};
+
+require.cache[localModulePath] = {
+    id: localModulePath,
+    filename: localModulePath,
+    loaded: true,
+    exports: {
+        getJobKey: job =>
+            job.roleNumber
+                ? `${job.company}:${job.roleNumber}`
+                : `${job.company}:${job.url}`,
+
+        saveJob: job => {
+            const key = job.jobKey ||
+                (job.roleNumber
+                    ? `${job.company}:${job.roleNumber}`
+                    : `${job.company}:${job.url}`);
+
+            const record = {
+                ...job,
+                jobKey: key
+            };
+
+            localJobs.set(key, record);
+
+            return record;
+        },
+
+        markJobAlerted: job => {
+            const key = job.jobKey ||
+                (job.roleNumber
+                    ? `${job.company}:${job.roleNumber}`
+                    : `${job.company}:${job.url}`);
+
+            const existing = localJobs.get(key);
+
+            if (!existing) {
+                return null;
+            }
+
+            const updated = {
+                ...existing,
+                alertedAt: new Date().toISOString()
+            };
+
+            localJobs.set(key, updated);
+
+            return updated;
+        }
+    }
+};
+
+require.cache[notifierModulePath] = {
+    id: notifierModulePath,
+    filename: notifierModulePath,
+    loaded: true,
+    exports: {
+        sendJobAlert: async () => {
+            senderCalls++;
+            throw new Error("Simulated email delivery failure.");
+        },
+
+        sendJobDigest: async () => {
+            senderCalls++;
+
+            if (senderCalls === 1) {
+                throw new Error("Simulated email delivery failure.");
+            }
+
+            return {
+                sent: true,
+                count: 1,
+                strongMatches: 1,
+                reviewMatches: 0
+            };
+        }
+    }
+};
+
+const {
+    processMatchedJobWithAlert,
+    processMatchedJobsAsDigest
+} = require("../src/notifications/alertManager");
+
 async function main() {
-    console.log("========================================");
-    console.log("ALERT FAILURE & RETRY TEST");
-    console.log("========================================");
+    console.log("SAFE ALERT RETRY TEST");
+    console.log("=====================");
 
-    const testJobKey =
-        `QA Job Hunter Retry Test:${TEST_ROLE_NUMBER}`;
-
-    // Remove any previous copy of this test job.
-    const existingJobs = loadJobs();
-
-    saveJobs(
-        existingJobs.filter(
-            (job) => job.jobKey !== testJobKey
-        )
-    );
-
-    console.log("\n[1/4] Simulating email failure...");
-
-    // This fake sender deliberately fails.
-    // It does NOT contact Gmail.
-    const failingAlertSender = async function () {
-        throw new Error(
-            "Simulated email delivery failure for testing."
-        );
+    // Test the existing individual-alert retry path.
+    const individualJob = {
+        ...testJob,
+        roleNumber: "TEST-INDIVIDUAL-RETRY",
+        url: "https://example.com/individual-retry"
     };
 
-    const failedResult =
-        await processMatchedJobWithAlert(
-            testJob,
-            failingAlertSender
-        );
-
-    console.log(`Result: ${failedResult.action}`);
-    console.log(`Reason: ${failedResult.reason}`);
-    console.log(`Error: ${failedResult.error}`);
-
-    const savedAfterFailure =
-        getJob(testJob);
-
-    console.log(
-        `AlertedAt after failure: ${
-            savedAfterFailure?.alertedAt || "NOT SET"
-        }`
+    const failed = await processMatchedJobWithAlert(
+        individualJob,
+        async () => {
+            throw new Error("Simulated individual email failure.");
+        }
     );
 
-    console.log("\n[2/4] Verifying failed alert state...");
+    assert.equal(failed.action, "ALERT_FAILED");
 
-    if (
-        failedResult.action === "ALERT_FAILED" &&
-        savedAfterFailure &&
-        !savedAfterFailure.alertedAt
-    ) {
-        console.log(
-            "Failure state verified: job saved without alertedAt."
-        );
-    } else {
-        throw new Error(
-            "Failure state was not recorded as expected."
-        );
-    }
+    const individualKey =
+        `${individualJob.company}:${individualJob.roleNumber}`;
 
-    console.log("\n[3/4] Retrying with real Gmail alert...");
-
-    // No custom sender is supplied here.
-    // Therefore the production Gmail sender is used.
-    const retryResult =
-        await processMatchedJobWithAlert(testJob);
-
-    console.log(`Result: ${retryResult.action}`);
-    console.log(`Reason: ${retryResult.reason}`);
-
-    if (retryResult.error) {
-        console.log(`Error: ${retryResult.error}`);
-    }
-
-    const savedAfterRetry =
-        getJob(testJob);
-
-    console.log(
-        `AlertedAt after retry: ${
-            savedAfterRetry?.alertedAt || "NOT SET"
-        }`
+    assert.equal(
+        sheetJobs.get(individualKey)?.alertedAt || "",
+        ""
     );
 
-    console.log("\n[4/4] Cleaning up test job...");
+    console.log("PASS: Individual email failure leaves job unalerted.");
 
-    const finalJobs = loadJobs().filter(
-        (job) => job.jobKey !== testJobKey
+    const retried = await processMatchedJobWithAlert(
+        individualJob,
+        async () => ({
+            messageId: "fake-individual-retry-success"
+        })
     );
 
-    saveJobs(finalJobs);
+    assert.equal(retried.action, "ALERT_SENT");
 
-    console.log(
-        "Temporary retry-test job removed."
+    console.log("PASS: Individual alert can retry successfully.");
+
+    // Test the digest failure and retry path.
+    const digestFailed = await processMatchedJobsAsDigest([testJob]);
+
+    assert.equal(digestFailed.action, "DIGEST_FAILED");
+
+    const digestKey =
+        `${testJob.company}:${testJob.roleNumber}`;
+
+    assert.equal(
+        sheetJobs.get(digestKey)?.alertedAt || "",
+        ""
     );
 
-    console.log("\n========================================");
-    console.log("RETRY TEST SUMMARY");
-    console.log("========================================");
+    console.log("PASS: Digest failure leaves job unalerted.");
 
-    console.log(
-        `Failure simulation : ${failedResult.action}`
-    );
+    const digestRetried =
+        await processMatchedJobsAsDigest([testJob]);
 
-    console.log(
-        `Retry result       : ${retryResult.action}`
-    );
+    assert.equal(digestRetried.action, "DIGEST_SENT");
 
-    console.log(
-        `Alerted after retry: ${
-            savedAfterRetry?.alertedAt
-                ? "YES"
-                : "NO"
-        }`
-    );
+    assert.ok(sheetJobs.get(digestKey)?.alertedAt);
 
-    if (
-        failedResult.action === "ALERT_FAILED" &&
-        retryResult.action === "ALERT_SENT" &&
-        savedAfterRetry?.alertedAt
-    ) {
-        console.log(
-            "\nSUCCESS: Failure and retry flow works correctly."
-        );
-    } else {
-        console.log(
-            "\nWARNING: Retry flow did not produce the expected result."
-        );
-    }
+    console.log("PASS: Failed digest can be retried successfully.");
+    console.log("\nAll safe retry tests passed.");
 }
 
-main().catch((error) => {
-    console.error("\nRetry test failed:");
-    console.error(error);
-    process.exit(1);
+main().catch(error => {
+    console.error("Retry test failed:", error);
+    process.exitCode = 1;
 });
