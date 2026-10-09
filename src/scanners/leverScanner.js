@@ -55,7 +55,16 @@ function isPotentialQATitle(title) {
         "quality test engineer",
         "senior qa",
         "senior test engineer",
-        "tester"
+        "tester",
+	    "game qa",
+        "game tester",
+        "gameplay tester",
+        "video game tester",
+        "localization tester",
+        "localization qa",
+        "localization test",
+        "compatibility tester",
+        "compatibility test engineer"
     ];
 
     return qaTitleKeywords.some((keyword) =>
@@ -250,6 +259,8 @@ async function scanLeverJobs(config) {
     }
 }
 
+
 module.exports = {
-    scanLeverJobs
+    scanLeverJobs,
+    isPotentialQATitle
 };
