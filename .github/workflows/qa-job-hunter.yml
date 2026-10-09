@@ -22,6 +22,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+
+      - name: Configure Google Sheets credentials
+        env:
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          test -n "$GOOGLE_SHEET_ID" || (echo "Missing GOOGLE_SHEET_ID secret" && exit 1)
+          test -n "$GOOGLE_SERVICE_ACCOUNT_JSON" || (echo "Missing GOOGLE_SERVICE_ACCOUNT_JSON secret" && exit 1)
+          printf '%s' "$GOOGLE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/google-service-account.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/google-service-account.json" >> "$GITHUB_ENV"
+          echo "Google Sheets configuration is ready."
+
+
       - name: Run automated tests
         run: npm test
 
@@ -34,3 +47,4 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
