@@ -6,6 +6,7 @@ const { scanWorkdayJobs } = require("./scanners/workdayScanner");
 const { extractWorkdayJobDetails } = require("./scanners/workdayJobDetails");
 const { scanBmcJobs } = require("./scanners/bmcScanner");
 const { scanEightfoldJobs } = require("./scanners/eightfoldScanner");
+const { scanLeverJobs } = require("./scanners/leverScanner");
 
 const { matchJob } = require("./matching/jobMatcher");
 const { processMatchedJobsAsDigest } =
@@ -230,6 +231,30 @@ async function main() {
     }
 
 
+    // ========================================
+    // ZETA - LEVER
+    // ========================================
+
+    console.log("\n========================================");
+    console.log("Scanning Zeta - Lever");
+    console.log("========================================");
+
+    let zetaJobs = [];
+
+    try {
+        zetaJobs = await scanLeverJobs({
+            company: "Zeta",
+            platform: "lever",
+            url: "https://jobs.lever.co/zeta"
+        });
+
+        console.log(`Zeta jobs returned: ${zetaJobs.length}`);
+    } catch (error) {
+        console.error(
+            `Zeta Lever scanner failed; continuing with other companies. ${error.message}`
+        );
+    }
+
 
     // ========================================
     // COMBINE ALL JOBS
@@ -244,9 +269,10 @@ async function main() {
     ...nvidiaJobs,
     ...bmcJobs,
     ...browserStackJobs,
-    ...qualcommJobs
+    ...qualcommJobs,
+    ...zetaJobs
 
-];
+ ];
 
 
     console.log("\n========================================");
@@ -292,9 +318,10 @@ async function main() {
     ...appleJobs,
     ...amazonJobs,
     ...bmcJobs,
-    ...qualcommJobs
+    ...qualcommJobs,
+    ...zetaJobs
 
-];
+    ];
 
 
     // ========================================
